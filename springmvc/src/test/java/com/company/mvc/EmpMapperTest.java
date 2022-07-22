@@ -17,17 +17,9 @@ public class EmpMapperTest {
 	public void test() {
 		EmpVO param = new EmpVO();
 		param.setEmployeeId(100);
-		Map<String, Object> result = map.getEmp(param);
-		System.out.println(result.get("name"));
+		EmpVO result = map.getEmp(param);
 	}
 	
 	// @Test 
-	public void list() {
-		// to do
-		EmpVO param = new EmpVO();
-		param.setDepartmentId("40");
-		List<EmpVO> result = map.getEmpList();
-		System.out.println(result);
-	}
 
 }

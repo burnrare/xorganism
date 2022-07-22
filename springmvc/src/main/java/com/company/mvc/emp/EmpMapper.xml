@@ -2,24 +2,58 @@
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="com.company.mvc.emp.EmpMapper">
 
-	<select id="getEmp" resultType="map">
-		SELECT first_name || last_name "name"
+	<select id="getEmp" resultType="EmpVO">
+		SELECT first_name, last_name, employee_id, email, hire_date, job_id
 		FROM EMPLOYEES 
 		WHERE EMPLOYEE_ID=#{employeeId}
 	</select>
 	
-	<select id="getEmpList" parameterType="empVO" resultType="EmpVO">
+	<select id="getEmpList" parameterType="empReqVO" resultType="EmpVO">
 		SELECT *
 		FROM EMPLOYEES
-		<where>
-			<if>
-				department_id = #{departmentId}
-			</if>
-			<if>
-				<foreach ></foreach>
-			</if>
-		</where>
+	<where>
+		<if test="employeeId != null and employeeId != ''">
+			and employee_id = #{employeeId}
+		</if>
+		<if test="jobId != null and jobId != ''">
+			and job_id = #{jobId}
+		</if>
+		<if test="sdt != null">
+			<![CDATA[and hire_date >= #{sdt}]]>
+		</if>
+		<if test="edt != null">
+			<![CDATA[and hire_date <= #{edt}]]>
+		</if>
+	</where>
 		ORDER BY EMPLOYEE_ID
 	</select>
 	
+	<!-- 등록 -->
+	<insert id="getEmpInsert">
+	<selectKey keyProperty="employeeId" order="BEFORE" resultType="int">
+		SELECT NVL(MAX(employee_id), 0) + 1 FROM EMPLOYEES
+	</selectKey>
+		INSERT INTO employees
+		(
+			first_name, last_name, employee_id, email, hire_date, job_id
+		)
+		VALUES
+		(
+			#{firstName}, #{lastName}, #{employeeId}, #{email}, #{hireDate}, #{jobId}
+		)
+	</insert>
+	<!-- 수정 -->
+	<update id="getEmpUpdate">
+		UPDATE employees
+		SET
+			first_name = #{firstName}, last_name = #{lastName}, email = #{email}, hire_date = #{hireDate}, job_id = #{jobId}
+		WHERE
+			employee_id = #{employeeId}
+	</update>
+	<!-- 삭제 -->
+	<delete id="getEmpDelete">
+		DELETE *
+		FROM employees
+		WHERE employee_id = #{employeeId}
+	</delete>
 </mapper>
